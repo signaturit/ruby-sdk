@@ -25,7 +25,15 @@ class TestSignaturitClient < Test::Unit::TestCase
 
         @client.set_document_storage('sftp', {})
 
-        assert_requested :patch, 'https://api.signaturit.com/v2/account.json', :headers => { :Authorization => 'Bearer a_token' }
+        assert_requested :post, 'https://api.signaturit.com/v2/account/storage.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_revert_to_default_document_storage
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.revert_to_default_document_storage()
+
+        assert_requested :delete, 'https://api.signaturit.com/v2/account/storage.json', :headers => { :Authorization => 'Bearer a_token' }
     end
 
     def test_get_signature

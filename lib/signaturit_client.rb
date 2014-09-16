@@ -42,7 +42,12 @@ class SignaturitClient
     def set_document_storage(type, params)
         params[:type] = type
 
-        request :patch, '/v2/account.json', params
+        request :post, '/v2/account/storage.json', params
+    end
+
+    # Revert the document storage to the signaturit's default
+    def revert_to_default_document_storage
+        request :delete, '/v2/account/storage.json'
     end
 
     # Get a concrete signature object
@@ -267,11 +272,11 @@ class SignaturitClient
         base = @production ? 'https://api.signaturit.com' : 'http://api.sandbox.signaturit.com'
 
         case method
-            when :get
+            when :get, :delete
                 encoded = URI.encode_www_form(params)
                 path = "#{path}?#{encoded}" if encoded.length > 0
 
-                body = RestClient.get("#{base}#{path}", :Authorization => "Bearer #{@token}")
+                body = RestClient.send(method, "#{base}#{path}", :Authorization => "Bearer #{@token}")
 
             else
                 body = RestClient.send(method, "#{base}#{path}", params, :Authorization => "Bearer #{@token}")
