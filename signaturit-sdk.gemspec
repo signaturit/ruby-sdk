@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
     s.platform    = Gem::Platform::RUBY
     s.name        = 'signaturit-sdk'
-    s.version     = '0.0.1'
+    s.version     = '0.0.2'
     s.date        = '2014-09-04'
     s.summary     = 'Signaturit Ruby SDK'
     s.description = 'Sign Documents Online'
