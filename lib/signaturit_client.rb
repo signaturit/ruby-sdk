@@ -9,8 +9,9 @@ class SignaturitClient
 
     # Initialize the object with the token and environment
     def initialize(token, production = false)
-        @token      = token
-        @production = production
+        base = production ? 'https://api.signaturit.com' : 'http://api.sandbox.signaturit.com'
+
+        @client = RestClient::Resource.new base, :headers => { :Authorization => "Bearer #{token}" }, :ssl_version => :TLSv1_2
     end
 
     # get info from your account
@@ -269,17 +270,15 @@ class SignaturitClient
 
     # Common request method
     def request(method, path, params = {}, to_json = true)
-        base = @production ? 'https://api.signaturit.com' : 'http://api.sandbox.signaturit.com'
-
         case method
             when :get, :delete
                 encoded = URI.encode_www_form(params)
                 path = "#{path}?#{encoded}" if encoded.length > 0
 
-                body = RestClient.send(method, "#{base}#{path}", :Authorization => "Bearer #{@token}")
+                body = @client[path].send method
 
             else
-                body = RestClient.send(method, "#{base}#{path}", params, :Authorization => "Bearer #{@token}")
+                body = @client[path].send method, params
         end
 
         body = JSON.parse body if to_json
