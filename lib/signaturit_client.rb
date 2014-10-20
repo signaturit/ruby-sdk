@@ -172,6 +172,14 @@ class SignaturitClient
         request :post, '/v2/signs.json', params
     end
 
+    # Cancel a signature request
+    #
+    # Params
+    # +signature_id++:: The id of the signature object
+    def cancel_signature_request(signature_id)
+        request :patch, "/v2/signs/#{signature_id}/cancel.json"
+    end
+
     # Get a concrete branding
     #
     # Params

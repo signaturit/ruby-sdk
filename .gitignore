@@ -1,2 +1,5 @@
 pkg
+Vagrantfile
+vagrant.sh
+.vagrant
 .DS_Store
