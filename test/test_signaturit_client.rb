@@ -110,6 +110,14 @@ class TestSignaturitClient < Test::Unit::TestCase
         assert_requested :patch, 'https://api.signaturit.com/v2/signs/an_id/cancel.json', :headers => { :Authorization => 'Bearer a_token' }
     end
 
+    def test_send_reminder
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.send_reminder('an_id', 'another_id')
+
+        assert_requested :post, 'https://api.signaturit.com/v2/signs/an_id/documents/another_id/reminder.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
     def test_create_signature_request_multi
         stub_request(:any, /.*/).to_return(:body => '{}')
 

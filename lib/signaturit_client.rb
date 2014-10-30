@@ -10,7 +10,7 @@ class SignaturitClient
     # Initialize the object with the token and environment
     def initialize(token, production = false)
         base = production ? 'https://api.signaturit.com' : 'http://api.sandbox.signaturit.com'
-
+        base = 'http://api.javier.signaturit.ngrok.com/app_dev.php'
         @client = RestClient::Resource.new base, :headers => { :Authorization => "Bearer #{token}" }, :ssl_version => :TLSv1_2
     end
 
@@ -110,7 +110,7 @@ class SignaturitClient
     #
     # Params:
     # +signature_id++:: The id of the signature object
-    # +document_id++:: THe id of the document object
+    # +document_id++:: The id of the document object
     # +path++:: Path where the document will be stored
     def get_audit_trail(signature_id, document_id, path)
         response = request :get, "/v2/signs/#{signature_id}/documents/#{document_id}/download/doc_proof", {}, false
@@ -126,7 +126,7 @@ class SignaturitClient
     #
     # Params:
     # +signature_id++:: The id of the signature object
-    # +document_id++:: THe id of the document object
+    # +document_id++:: The id of the document object
     # +path++:: Path where the document will be stored
     def get_signed_document(signature_id, document_id, path)
         response = request :get, "/v2/signs/#{signature_id}/documents/#{document_id}/download/signed", {}, false
@@ -178,6 +178,15 @@ class SignaturitClient
     # +signature_id++:: The id of the signature object
     def cancel_signature_request(signature_id)
         request :patch, "/v2/signs/#{signature_id}/cancel.json"
+    end
+
+    # Send a reminder for the given signature request document
+    #
+    # Param
+    # +signature_id++:: The id of the signature object
+    # +document_id++:: The id of the document object
+    def send_reminder(signature_id, document_id)
+        request :post, "/v2/signs/#{signature_id}/documents/#{document_id}/reminder.json"
     end
 
     # Get a concrete branding
