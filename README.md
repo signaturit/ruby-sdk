@@ -125,7 +125,7 @@ response = client.cancel_signature_request('SIGNATURE_ID');
 Send a reminder for signature request job.
 
 ```
-response = client.send_reminder('SIGNATURE_ID', 'JOB_ID');
+response = client.send_reminder('SIGNATURE_ID', 'DOCUMENT_ID');
 ```
 
 ### Get audit trail
