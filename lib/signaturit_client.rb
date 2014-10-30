@@ -10,7 +10,7 @@ class SignaturitClient
     # Initialize the object with the token and environment
     def initialize(token, production = false)
         base = production ? 'https://api.signaturit.com' : 'http://api.sandbox.signaturit.com'
-        base = 'http://api.javier.signaturit.ngrok.com/app_dev.php'
+
         @client = RestClient::Resource.new base, :headers => { :Authorization => "Bearer #{token}" }, :ssl_version => :TLSv1_2
     end
 
