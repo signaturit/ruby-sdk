@@ -11,7 +11,7 @@ class SignaturitClient
     def initialize(token, production = false)
         base = production ? 'https://api.signaturit.com' : 'http://api.sandbox.signaturit.com'
 
-        @client = RestClient::Resource.new base, :headers => { :Authorization => "Bearer #{token}" }, :ssl_version => :TLSv1_2
+        @client = RestClient::Resource.new base, :headers => { :Authorization => "Bearer #{token}", :user_agent => "ruby-sdk.0.0.4"}, :ssl_version => :TLSv1_2
     end
 
     # get info from your account
@@ -66,11 +66,20 @@ class SignaturitClient
     # +offset+:: Offset of results to skip
     # +status+:: Status of the signature objects to filter
     # +since+:: Filter signature objects created since this date
-    def get_signatures(limit = 100, offset = 0, status = nil, since = nil)
+    # +data+:: Filter signature objects using custom data
+    def get_signatures(limit = 100, offset = 0, status = nil, since = nil, data = nil)
         params = { :limit => limit, :offset => offset }
 
         params[:status] = status unless status.nil?
         params[:since]  = since unless since.nil?
+
+        if data
+          data.each do |key, value|
+            new_key = "data.#{key}"
+
+            params[new_key] = value
+          end
+        end
 
         request :get, '/v2/signs.json', params
     end
@@ -80,11 +89,20 @@ class SignaturitClient
     # Params:
     # +status+:: Status of the signature objects to filter
     # +since+:: Filter signature objects created since this date
-    def count_signatures(status = nil, since = nil)
+    # +data+:: Filter signature objects using custom data
+    def count_signatures(status = nil, since = nil, data = nil)
         params = {}
 
         params[:status] = status unless status.nil?
         params[:since]  = since unless since.nil?
+
+        if data
+          data.each do |key, value|
+            new_key = "data.#{key}"
+
+            params[new_key] = value
+          end
+        end
 
         request :get, '/v2/signs/count.json', params
     end
@@ -293,5 +311,4 @@ class SignaturitClient
 
         body
     end
-
 end

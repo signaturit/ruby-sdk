@@ -69,6 +69,12 @@ response = client.get_signatures(100, 0, 3)
 response = client.get_signatures(100, 0, 3, '2014-7-20')
 ```
 
+##### Getting signatures with custom field "crm_id"
+
+```
+response = client.get_signatures(100, 0, nil, nil, :crm_id => 2445)
+```
+
 ### Count signature requests
 
 Count your signature requests.
@@ -108,6 +114,15 @@ Create a new signature request. Check all [params](http://docs.signaturit.com/ap
 ```
 recipients =  ['bobsoap@signatur.it']
 params = {:subject: 'Receipt number 250', :body: 'Please, can you sign this document?'}
+file_path = '/documents/contracts/125932_important.pdf'
+response = client.create_signature_request(file_path, recipients, params)
+```
+
+You can add custom info in your requests
+
+```
+recipients =  ['bobsoap@signatur.it']
+params = {:subject =>  'Receipt number 250', :body => 'Please, can you sign this document?', :data => {:crm_id => 2445}}
 file_path = '/documents/contracts/125932_important.pdf'
 response = client.create_signature_request(file_path, recipients, params)
 ```
