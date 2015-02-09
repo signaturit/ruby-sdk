@@ -135,6 +135,14 @@ Cancel a signature request.
 response = client.cancel_signature_request('SIGNATURE_ID');
 ```
 
+### Send reminder
+
+Send a reminder for signature request job.
+
+```
+response = client.send_reminder('SIGNATURE_ID', 'DOCUMENT_ID');
+```
+
 ### Get audit trail
 
 Get the audit trail of a signature request document and save it in the submitted path.
