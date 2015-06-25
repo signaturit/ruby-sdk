@@ -67,7 +67,8 @@ class SignaturitClient
     # +status+:: Status of the signature objects to filter
     # +since+:: Filter signature objects created since this date
     # +data+:: Filter signature objects using custom data
-    def get_signatures(limit = 100, offset = 0, status = nil, since = nil, data = nil)
+    # +ids+:: Filter signature objects using signature ids
+    def get_signatures(limit = 100, offset = 0, status = nil, since = nil, data = nil, ids = nil)
         params = { :limit => limit, :offset => offset }
 
         params[:status] = status unless status.nil?
@@ -81,6 +82,10 @@ class SignaturitClient
           end
         end
 
+        if ids
+          params['ids'] = ids.join(',')
+        end
+
         request :get, '/v2/signs.json', params
     end
 
@@ -90,7 +95,8 @@ class SignaturitClient
     # +status+:: Status of the signature objects to filter
     # +since+:: Filter signature objects created since this date
     # +data+:: Filter signature objects using custom data
-    def count_signatures(status = nil, since = nil, data = nil)
+    # +ids+:: Filter signature objects using signature ids
+    def count_signatures(status = nil, since = nil, data = nil, ids = nil)
         params = {}
 
         params[:status] = status unless status.nil?
@@ -102,6 +108,10 @@ class SignaturitClient
 
             params[new_key] = value
           end
+        end
+
+        if ids
+          params['ids'] = ids.join(',')
         end
 
         request :get, '/v2/signs/count.json', params
@@ -308,6 +318,7 @@ class SignaturitClient
         case method
             when :get, :delete
                 encoded = URI.encode_www_form(params)
+
                 path = "#{path}?#{encoded}" if encoded.length > 0
 
                 body = @client[path].send method
