@@ -6,7 +6,6 @@ require 'json'
 
 # Signaturit client class
 class SignaturitClient
-
     # Initialize the object with the token and environment
     def initialize(token, production = false)
         base = production ? 'https://api.signaturit.com' : 'http://api.sandbox.signaturit.com'
@@ -17,38 +16,6 @@ class SignaturitClient
     # get info from your account
     def get_account
         request :get, '/v2/account.json'
-    end
-
-    # Set the credentials in account, in order to store a copy from all documents
-    #
-    # Params:
-    # +type+:: Type of storage, sftp or s3
-    # +params+:: An array with credentials data
-    #     sftp:
-    #         - host: Your host
-    #         - port: Connection port
-    #         - dir: Directory where store the files
-    #         - user: Username
-    #         - auth_method: KEY or PASS
-    #         pass:
-    #             - password: Password
-    #         key:
-    #             - private: Private key
-    #             - public: Public key
-    #             - passphrase: The passphrase
-    #     s3:
-    #         - bucket: Name of bucket
-    #         - key: S3 key
-    #         - secret: S3 secret
-    def set_document_storage(type, params)
-        params[:type] = type
-
-        request :post, '/v2/account/storage.json', params
-    end
-
-    # Revert the document storage to the signaturit's default
-    def revert_to_default_document_storage
-        request :delete, '/v2/account/storage.json'
     end
 
     # Get a concrete signature object
@@ -64,27 +31,12 @@ class SignaturitClient
     # Params:
     # +limit+:: Maximum number of results to return
     # +offset+:: Offset of results to skip
-    # +status+:: Status of the signature objects to filter
-    # +since+:: Filter signature objects created since this date
-    # +data+:: Filter signature objects using custom data
-    # +ids+:: Filter signature objects using signature ids
-    def get_signatures(limit = 100, offset = 0, status = nil, since = nil, data = nil, ids = nil)
-        params = { :limit => limit, :offset => offset }
+    # +conditions+:: Filter conditions
+    def get_signatures(limit = 100, offset = 0, conditions = {})
+        params = extract_query_params conditions
 
-        params[:status] = status unless status.nil?
-        params[:since]  = since unless since.nil?
-
-        if data
-          data.each do |key, value|
-            new_key = "data.#{key}"
-
-            params[new_key] = value
-          end
-        end
-
-        if ids
-          params['ids'] = ids.join(',')
-        end
+        params['limit']  = limit
+        params['offset'] = offset
 
         request :get, '/v2/signs.json', params
     end
@@ -92,27 +44,9 @@ class SignaturitClient
     # Get the number of signature objects
     #
     # Params:
-    # +status+:: Status of the signature objects to filter
-    # +since+:: Filter signature objects created since this date
-    # +data+:: Filter signature objects using custom data
-    # +ids+:: Filter signature objects using signature ids
-    def count_signatures(status = nil, since = nil, data = nil, ids = nil)
-        params = {}
-
-        params[:status] = status unless status.nil?
-        params[:since]  = since unless since.nil?
-
-        if data
-          data.each do |key, value|
-            new_key = "data.#{key}"
-
-            params[new_key] = value
-          end
-        end
-
-        if ids
-          params['ids'] = ids.join(',')
-        end
+    # +conditions+:: Filter conditions
+    def count_signatures(conditions = {})
+        params = extract_query_params conditions
 
         request :get, '/v2/signs/count.json', params
     end
@@ -140,7 +74,7 @@ class SignaturitClient
     # +signature_id++:: The id of the signature object
     # +document_id++:: The id of the document object
     # +path++:: Path where the document will be stored
-    def get_audit_trail(signature_id, document_id, path)
+    def download_audit_trail(signature_id, document_id, path)
         response = request :get, "/v2/signs/#{signature_id}/documents/#{document_id}/download/doc_proof", {}, false
 
         File.open(path, 'wb') do |file|
@@ -156,7 +90,7 @@ class SignaturitClient
     # +signature_id++:: The id of the signature object
     # +document_id++:: The id of the document object
     # +path++:: Path where the document will be stored
-    def get_signed_document(signature_id, document_id, path)
+    def download_signed_document(signature_id, document_id, path)
         response = request :get, "/v2/signs/#{signature_id}/documents/#{document_id}/download/signed", {}, false
 
         File.open(path, 'wb') do |file|
@@ -184,18 +118,18 @@ class SignaturitClient
     #   - mandatory_pages: An array with the pages the signer must sign
     #   - branding_id: The id of the branding you want to use
     #   - templates: An array ot template ids to use.
-    def create_signature_request(filepath, recipients, params = {})
+    def create_signature(filepath, recipients, params = {})
         params[:recipients] = {}
 
-        [recipients].flatten().each_with_index do |recipient, index|
+        [recipients].flatten.each_with_index do |recipient, index|
             params[:recipients][index] = recipient
         end
 
-        params[:files] = [filepath].flatten().map do |filepath|
+        params[:files] = [filepath].flatten.map do |filepath|
             File.new(filepath, 'rb')
         end
 
-        params[:templates] = [params[:templates]].flatten() if params[:templates]
+        params[:templates] = [params[:templates]].flatten if params[:templates]
 
         request :post, '/v2/signs.json', params
     end
@@ -204,7 +138,7 @@ class SignaturitClient
     #
     # Params
     # +signature_id++:: The id of the signature object
-    def cancel_signature_request(signature_id)
+    def cancel_signature(signature_id)
         request :patch, "/v2/signs/#{signature_id}/cancel.json"
     end
 
@@ -213,7 +147,7 @@ class SignaturitClient
     # Param
     # +signature_id++:: The id of the signature object
     # +document_id++:: The id of the document object
-    def send_reminder(signature_id, document_id)
+    def send_signature_reminder(signature_id, document_id)
         request :post, "/v2/signs/#{signature_id}/documents/#{document_id}/reminder.json"
     end
 
@@ -288,13 +222,13 @@ class SignaturitClient
         request :put, "/v2/brandings/#{branding_id}/logo.json", File.read(filepath)
     end
 
-    # Update the template of a branding
+    # Update the email of a branding
     #
     # Params:
     # +branding_id+:: Id of the branding to update
     # +filepath+:: The path to the html file
     # +template+:: The email template trying to update
-    def update_branding_template(branding_id, template, filepath)
+    def update_branding_email(branding_id, template, filepath)
         request :put, "/v2/brandings/#{branding_id}/emails/#{template}.json", File.read(filepath)
     end
 
@@ -309,11 +243,140 @@ class SignaturitClient
         request :get, '/v2/templates.json', params
     end
 
+    # Get all emails
+    #
+    # Params:
+    # +limit+:: Maximum number of results to return
+    # +offset+:: Offset of results to skip
+    # +conditions+:: Query conditions
+    def get_emails(limit = 100, offset = 0, conditions = {})
+        params = extract_query_params conditions
+
+        params['limit']  = limit
+        params['offset'] = offset
+
+        request :get, '/v3/emails.json', params
+    end
+
+    # Count all emails
+    #
+    # Params:
+    # +conditions+:: Query conditions
+    def count_emails(conditions = {})
+        params = extract_query_params conditions
+
+        request :get, '/v3/emails/count.json', params
+    end
+
+    # Get a single email
+    #
+    # Params:
+    # +email_id+:: Id of email
+    def get_email(email_id)
+        request :get, "/v3/emails/#{email_id}.json"
+    end
+
+    # Get a single email certificates
+    #
+    # Params:
+    # +email_id+:: Id of email
+    def get_email_certificates(email_id)
+        request :get, "/v3/emails/#{email_id}/certificates.json"
+    end
+
+    # Get a single email certificate
+    #
+    # Params:
+    # +email_id+:: Id of email
+    # +certificate_id+:: Id of certificate
+    def get_email_certificate(email_id, certificate_id)
+        request :get, "/v3/emails/#{email_id}/certificates/#{certificate_id}.json"
+    end
+
+    # Create a new email
+    #
+    # Params:
+    # +files+:: File or files to send with the email
+    # +recipients+:: Recipients for the email
+    # +subject+:: Email subject
+    # +body+:: Email body
+    # +params+:: Extra params
+    def create_email(files, recipients, subject, body, params = {})
+        params[:recipients] = {}
+
+        [recipients].flatten.each_with_index do |recipient, index|
+            params[:recipients][index] = recipient
+        end
+
+        params[:files] = [files].flatten.map do |filepath|
+            File.new(filepath, 'rb')
+        end
+
+        params[:subject] = subject
+        params[:body]    = body
+
+        request :post, '/v3/signs.json', params
+    end
+
+    # Get the audit trail of concrete certificate
+    #
+    # Params:
+    # +email_id++:: The id of the signature object
+    # +certificate_id++:: The id of the document object
+    # +path++:: Path where the document will be stored
+    def download_email_audit_trail(email_id, certificate_id, path)
+        response = request :get, "/v3/emails/#{email_id}/certificates/#{certificate_id}/download/audit_trail", {}, false
+
+        File.open(path, 'wb') do |file|
+            file.write(response)
+        end
+
+        nil
+    end
+
+    # Get the original file of concrete certificate
+    #
+    # Params:
+    # +email_id++:: The id of the signature object
+    # +certificate_id++:: The id of the document object
+    # +path++:: Path where the document will be stored
+    def download_email_original_file(email_id, certificate_id, path)
+        response = request :get, "/v3/emails/#{email_id}/certificates/#{certificate_id}/download/original", {}, false
+
+        File.open(path, 'wb') do |file|
+            file.write(response)
+        end
+
+        nil
+    end
+
     # PRIVATE METHODS FROM HERE
 
     private
+    def extract_query_params(conditions)
+        params = {}
+
+        conditions.each do |key, value|
+            if key == 'data'
+                value.each do|data_key, data_value|
+                    params[key][data_key] = data_value
+                end
+
+                continue
+            end
+
+            if key == 'ids'
+                value = value.join(',')
+            end
+
+            params[key] = value
+        end
+
+        params
+    end
 
     # Common request method
+    private
     def request(method, path, params = {}, to_json = true)
         case method
             when :get, :delete
