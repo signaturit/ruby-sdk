@@ -15,25 +15,9 @@ class TestSignaturitClient < Test::Unit::TestCase
     def test_get_account
         stub_request(:any, /.*/).to_return(:body => '{}')
 
-        @client.get_account()
+        @client.get_account
 
         assert_requested :get, 'https://api.signaturit.com/v2/account.json', :headers => { :Authorization => 'Bearer a_token' }
-    end
-
-    def test_set_document_storage
-        stub_request(:any, /.*/).to_return(:body => '{}')
-
-        @client.set_document_storage('sftp', {})
-
-        assert_requested :post, 'https://api.signaturit.com/v2/account/storage.json', :headers => { :Authorization => 'Bearer a_token' }
-    end
-
-    def test_revert_to_default_document_storage
-        stub_request(:any, /.*/).to_return(:body => '{}')
-
-        @client.revert_to_default_document_storage()
-
-        assert_requested :delete, 'https://api.signaturit.com/v2/account/storage.json', :headers => { :Authorization => 'Bearer a_token' }
     end
 
     def test_get_signature
@@ -55,7 +39,7 @@ class TestSignaturitClient < Test::Unit::TestCase
     def test_count_signatures
         stub_request(:any, /.*/).to_return(:body => '{}')
 
-        @client.count_signatures('signed', '1982-07-27')
+        @client.count_signatures({:status => 'signed', :since =>'1982-07-27'})
 
         assert_requested :get, 'https://api.signaturit.com/v2/signs/count.json?status=signed&since=1982-07-27', :headers => { :Authorization => 'Bearer a_token' }
     end
@@ -79,7 +63,7 @@ class TestSignaturitClient < Test::Unit::TestCase
     def test_get_audit_trail
         stub_request(:any, /.*/).to_return(:body => '')
 
-        @client.get_audit_trail('an_id', 'another_id', Tempfile.new('pdf').path)
+        @client.download_audit_trail('an_id', 'another_id', Tempfile.new('pdf').path)
 
         assert_requested :get, 'https://api.signaturit.com/v2/signs/an_id/documents/another_id/download/doc_proof', :headers => { :Authorization => 'Bearer a_token' }
     end
@@ -87,7 +71,7 @@ class TestSignaturitClient < Test::Unit::TestCase
     def test_get_signed_document
         stub_request(:any, /.*/).to_return(:body => '')
 
-        @client.get_signed_document('an_id', 'another_id', Tempfile.new('pdf').path)
+        @client.download_signed_document('an_id', 'another_id', Tempfile.new('pdf').path)
 
         assert_requested :get, 'https://api.signaturit.com/v2/signs/an_id/documents/another_id/download/signed', :headers => { :Authorization => 'Bearer a_token' }
     end
@@ -97,7 +81,7 @@ class TestSignaturitClient < Test::Unit::TestCase
 
         path = File.join(File.expand_path(File.dirname(__FILE__)), 'file.pdf')
 
-        @client.create_signature_request(path, 'admin@signatur.it')
+        @client.create_signature path, 'admin@signatur.it'
 
         assert_requested :post, 'https://api.signaturit.com/v2/signs.json', :headers => { :Authorization => 'Bearer a_token' }
     end
@@ -105,7 +89,7 @@ class TestSignaturitClient < Test::Unit::TestCase
     def test_cancel_signature_request
         stub_request(:any, /.*/).to_return(:body => '{}')
 
-        @client.cancel_signature_request('an_id')
+        @client.cancel_signature 'an_id'
 
         assert_requested :patch, 'https://api.signaturit.com/v2/signs/an_id/cancel.json', :headers => { :Authorization => 'Bearer a_token' }
     end
@@ -113,7 +97,7 @@ class TestSignaturitClient < Test::Unit::TestCase
     def test_send_reminder
         stub_request(:any, /.*/).to_return(:body => '{}')
 
-        @client.send_reminder('an_id', 'another_id')
+        @client.send_signature_reminder 'an_id', 'another_id'
 
         assert_requested :post, 'https://api.signaturit.com/v2/signs/an_id/documents/another_id/reminder.json', :headers => { :Authorization => 'Bearer a_token' }
     end
@@ -126,7 +110,7 @@ class TestSignaturitClient < Test::Unit::TestCase
             File.join(File.expand_path(File.dirname(__FILE__)), 'file.pdf')
         ]
 
-        @client.create_signature_request(paths, 'admin@signatur.it')
+        @client.create_signature paths, 'admin@signatur.it'
 
         assert_requested :post, 'https://api.signaturit.com/v2/signs.json', :headers => { :Authorization => 'Bearer a_token' }
     end
@@ -142,7 +126,7 @@ class TestSignaturitClient < Test::Unit::TestCase
     def test_get_brandings
         stub_request(:any, /.*/).to_return(:body => '[]')
 
-        @client.get_brandings()
+        @client.get_brandings
 
         assert_requested :get, 'https://api.signaturit.com/v2/brandings.json', :headers => { :Authorization => 'Bearer a_token' }
     end
@@ -178,7 +162,7 @@ class TestSignaturitClient < Test::Unit::TestCase
 
         path = File.join(File.expand_path(File.dirname(__FILE__)), 'file.html')
 
-        @client.update_branding_template('an_id', 'a_template', path)
+        @client.update_branding_email('an_id', 'a_template', path)
 
         assert_requested :put, 'https://api.signaturit.com/v2/brandings/an_id/emails/a_template.json', :headers => { :Authorization => 'Bearer a_token' }
     end

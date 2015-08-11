@@ -307,7 +307,7 @@ Create a new certified email.
 ```
 file_path  = '/path/document.pdf'
 recipients = [{:fullname => 'Mr John', :email => 'john.doe@signaturit.com'}]
-response  = client.create_email(file_path, recipients, 'ruby subject', 'ruby body')
+response  = client.create_email file_path, recipients, 'ruby subject', 'ruby body', {}
 ```
 
 ### Get original file
@@ -315,7 +315,7 @@ response  = client.create_email(file_path, recipients, 'ruby subject', 'ruby bod
 Get the original document of an email request and save it in the submitted path.
 
 ```
-response = client.download_email_original_file('EMAIL_ID','CERTIFICATE_ID','/path/doc.pdf')
+response = client.download_email_original_file 'EMAIL_ID','CERTIFICATE_ID','/path/doc.pdf'
 ```
 
 ### Get audit trail document
