@@ -1,3 +1,7 @@
+DO NOT USE THIS CODE ON PRODUCTION UNTIL NEW RELEASE IS DONE
+============================================================
+
+
 Signaturit Ruby SDK
 ===================
 
@@ -60,7 +64,7 @@ response = client.get_signatures 50, 50
 ##### Getting only the finished signatures 
 
 ```
-response = client.get_signatures 100, 0, {:status => 3}
+response = client.get_signatures 100, 0, {:status => 'completed'}
 ```
 
 ##### Getting the finished signatures created since July 20th of 2014
@@ -72,7 +76,7 @@ response = client.get_signatures 100, 0, 3, {:since => '2014-7-20'}
 ##### Getting signatures with custom field "crm_id"
 
 ```
-response = client.get_signatures 100, 0, {:data => {:crm_id => 2445}}
+response = client.get_signatures 100, 0, {:crm_id => 2445}
 ```
 
 ### Count signature requests
@@ -89,22 +93,6 @@ Get a single signature request.
 
 ```
 response = client.get_signature 'SIGNATURE_ID'
-```
-
-### Get signature documents
-
-Get all documents from a signature request.
-
-```
-response = client.get_signature_documents 'SIGNATURE_ID'
-```
-
-### Get signature document
-
-Get a single document from a signature request.
-
-```
-response = client.get_signature_document 'SIGNATURE_ID','DOCUMENT_ID'
 ```
 
 ### Signature request
@@ -154,28 +142,18 @@ response = client.send_signature_reminder 'SIGNATURE_ID', 'DOCUMENT_ID'
 
 ### Get audit trail
 
-Get the audit trail of a signature request document and save it in the submitted path.
+Get the audit trail of a signature request document
 
 ```
-response = client.download_audit_trail 'ID', 'DOCUMENT_ID', '/path/doc.pdf'
+response = client.download_audit_trail 'ID', 'DOCUMENT_ID'
 ```
 
 ### Get signed document
 
-Get the signed document of a signature request document and save it in the submitted path.
+Get the signed document of a signature request document
 
 ```
-response = client.download_signed_document 'ID', 'DOCUMENT_ID', '/path/doc.pdf'
-```
-
-## Account
-
-### Get account
-
-Retrieve the information of your account.
-
-```
-response = client.get_account
+response = client.download_signed_document 'ID', 'DOCUMENT_ID'
 ```
 
 ## Branding
@@ -202,8 +180,8 @@ Create a new branding. You can check all branding params [here](http://docs.sign
 
 ```
 params = {
-    :corporate_layout_color: '#FFBF00',
-    :corporate_text_color: '#2A1B0A',
+    :layout_color: '#FFBF00',
+    :text_color: '#2A1B0A',
     :application_texts: { :sign_button: 'Sign!' }
 }
 response = client.create_branding params
@@ -216,24 +194,6 @@ Update a single branding.
 ```
 params = { :application_texts: { :send_button: 'Send!' } }
 response = client.update_branding 'BRANDING_ID', params
-```
-
-### Update branding logo
-
-Change the branding logo.
-
-```
-file_path = '/path/new_logo.png'
-response = client.update_branding_logo 'BRANDING_ID', file_path
-```
-
-### Update branding template
-
-Change a template. Learn more about the templates [here](http://docs.signaturit.com/api/#put_template_branding).
-
-```
-file_path = '/path/new_template.html'
-response = client.update_branding_email 'BRANDING_ID', 'sign_request', file_path
 ```
 
 ## Template
@@ -284,46 +244,30 @@ Get a single email
 client.get_email 'EMAIL_ID'
 ```
 
-### Get email certificates
-
-Get a single email certificates
-
-```
-client.get_email_certificates 'EMAIL_ID'
-```
-
-### Get email certificate
-
-Get a single email certificate
-
-```
-client.get_email_certificate 'EMAIL_ID', 'CERTIFICATE_ID'
-```
-
 ### Create email
 
 Create a new certified email.
 
 ```
 file_path  = '/path/document.pdf'
-recipients = [{:fullname => 'Mr John', :email => 'john.doe@signaturit.com'}]
+recipients = [{:name => 'Mr John', :email => 'john.doe@signaturit.com'}]
 response  = client.create_email file_path, recipients, 'ruby subject', 'ruby body', {}
 ```
 
 ### Get original file
 
-Get the original document of an email request and save it in the submitted path.
+Get the original document of an email request
 
 ```
-response = client.download_email_original_file 'EMAIL_ID','CERTIFICATE_ID','/path/doc.pdf'
+response = client.download_email_original_file 'EMAIL_ID','CERTIFICATE_ID'
 ```
 
 ### Get audit trail document
 
-Get the audit trail document of an email request and save it in the submitted path.
+Get the audit trail document of an email request
 
 ```
-response = client.download_email_audit_trail 'EMAIL_ID','CERTIFICATE_ID','/path/doc.pdf'
+response = client.download_email_audit_trail 'EMAIL_ID','CERTIFICATE_ID'
 ```
 
 
