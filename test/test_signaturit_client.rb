@@ -74,9 +74,9 @@ class TestSignaturitClient < Test::Unit::TestCase
     def test_send_reminder
         stub_request(:any, /.*/).to_return(:body => '{}')
 
-        @client.send_signature_reminder 'an_id', 'another_id'
+        @client.send_signature_reminder 'an_id'
 
-        assert_requested :post, 'https://api.signaturit.com/v3/signatures/an_id/documents/another_id/reminder.json', :headers => { :Authorization => 'Bearer a_token' }
+        assert_requested :post, 'https://api.signaturit.com/v3/signatures/an_id/reminder.json', :headers => { :Authorization => 'Bearer a_token' }
     end
 
     def test_create_signature_request_multi

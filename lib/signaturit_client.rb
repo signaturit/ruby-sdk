@@ -100,9 +100,8 @@ class SignaturitClient
     #
     # Param
     # +signature_id++:: The id of the signature object
-    # +document_id++:: The id of the document object
-    def send_signature_reminder(signature_id, document_id)
-        request :post, "/v3/signatures/#{signature_id}/documents/#{document_id}/reminder.json"
+    def send_signature_reminder(signature_id)
+        request :post, "/v3/signatures/#{signature_id}reminder.json"
     end
 
     # Get a concrete branding
