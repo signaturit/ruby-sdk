@@ -6,6 +6,7 @@ require 'json'
 
 # Signaturit client class
 class SignaturitClient
+
     # Initialize the object with the token and environment
     def initialize(token, production = false)
         base = production ? 'https://api.signaturit.com' : 'https://api.sandbox.signaturit.com'
@@ -214,6 +215,8 @@ class SignaturitClient
 
     # PRIVATE METHODS FROM HERE
     private
+
+    # Parse query parameters
     def extract_query_params(conditions)
         params = {}
 
@@ -229,7 +232,6 @@ class SignaturitClient
     end
 
     # Common request method
-    private
     def request(method, path, params = {}, to_json = true)
         case method
             when :get, :delete
@@ -247,4 +249,5 @@ class SignaturitClient
 
         body
     end
+
 end

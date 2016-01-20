@@ -1,11 +1,7 @@
-DO NOT USE THIS CODE ON PRODUCTION UNTIL NEW RELEASE IS DONE
-============================================================
-
-
 Signaturit Ruby SDK
 ===================
 
-This package is a wrapper for Signaturit Api. If you didn't read the documentation yet, maybe it's time to take a look [here](http://docs.signaturit.com/).
+This package is a wrapper for Signaturit Api. If you didn't read the documentation yet, maybe it's time to take a look [here](https://docs.signaturit.com/).
 
 You can install the package through gem.
 
@@ -61,7 +57,7 @@ response = client.get_signatures 50
 response = client.get_signatures 50, 50
 ```
 
-##### Getting only the finished signatures 
+##### Getting only the finished signatures
 
 ```
 response = client.get_signatures 100, 0, {:status => 'completed'}
@@ -97,7 +93,7 @@ response = client.get_signature 'SIGNATURE_ID'
 
 ### Signature request
 
-Create a new signature request. Check all [params](http://docs.signaturit.com/api/#sign_create_sign).
+Create a new signature request. You can check all signature [params](https://docs.signaturit.com/api/v3#sign_create_sign).
 
 ```
 recipients =  ['bobsoap@signatur.it']
@@ -176,7 +172,7 @@ response = client.get_branding 'BRANDING_ID'
 
 ### Create branding
 
-Create a new branding. You can check all branding params [here](http://docs.signaturit.com/api/#set_branding).`
+Create a new branding. You can check all branding [params](https://docs.signaturit.com/api/v3#set_branding).`
 
 ```
 params = {
@@ -269,6 +265,3 @@ Get the audit trail document of an email request
 ```
 response = client.download_email_audit_trail 'EMAIL_ID','CERTIFICATE_ID'
 ```
-
-
-

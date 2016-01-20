@@ -131,4 +131,5 @@ class TestSignaturitClient < Test::Unit::TestCase
 
         assert_requested :get, 'https://api.signaturit.com/v3/templates.json?limit=5&offset=10', :headers => { :Authorization => 'Bearer a_token' }
     end
+
 end
