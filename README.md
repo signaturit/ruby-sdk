@@ -1,3 +1,7 @@
+========================
+DO NOT USE MASTER BRANCH
+========================
+
 Signaturit Ruby SDK
 ===================
 
