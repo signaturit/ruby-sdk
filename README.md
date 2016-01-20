@@ -137,7 +137,7 @@ response = client.cancel_signature 'SIGNATURE_ID'
 Send a reminder for signature request job.
 
 ```
-response = client.send_signature_reminder 'SIGNATURE_ID', 'DOCUMENT_ID'
+response = client.send_signature_reminder 'SIGNATURE_ID'
 ```
 
 ### Get audit trail
