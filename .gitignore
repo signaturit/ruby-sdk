@@ -1,3 +1,4 @@
+*.lock
 pkg
 Vagrantfile
 vagrant.sh

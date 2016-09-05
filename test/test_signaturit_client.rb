@@ -1,5 +1,4 @@
 require 'test/unit'
-
 require 'webmock/test_unit'
 
 require './lib/signaturit_client.rb'
