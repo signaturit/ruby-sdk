@@ -11,7 +11,7 @@ class SignaturitClient
     def initialize(token, production = false)
         base = production ? 'https://api.signaturit.com' : 'https://api.sandbox.signaturit.com'
 
-        @client = RestClient::Resource.new base, :headers => { :Authorization => "Bearer #{token}", :user_agent => 'signaturit-ruby-sdk 1.0.0' }, :ssl_version => :TLSv1_2
+        @client = RestClient::Resource.new base, :headers => { :Authorization => "Bearer #{token}", :user_agent => 'signaturit-ruby-sdk 1.0.2' }, :ssl_version => :TLSv1_2
     end
 
     # Get a concrete signature object
@@ -77,6 +77,14 @@ class SignaturitClient
         params[:recipients] = {}
 
         [recipients].flatten.each_with_index do |recipient, index|
+            # if only email is given, transform it to a object
+            recipient = { email: recipient, name: recipient } if recipient.is_a? String
+
+            # workaround for a bug in rest_client not dealing with objects inside an array
+            if recipient[:require_signature_in_coordinates]
+                recipient[:require_signature_in_coordinates] = array2hash recipient[:require_signature_in_coordinates]
+            end
+
             params[:recipients][index] = recipient
         end
 
@@ -215,6 +223,23 @@ class SignaturitClient
 
     # PRIVATE METHODS FROM HERE
     private
+
+    # convert array to hash recursively
+    def array2hash(array)
+        unless array.is_a?(Array)
+            return array
+        end
+
+        Hash[
+            array.map.with_index do |x, i|
+                if x.is_a?(Array)
+                    x = array2hash(x)
+                end
+
+                [i, x]
+            end
+        ]
+    end
 
     # Parse query parameters
     def extract_query_params(conditions)
