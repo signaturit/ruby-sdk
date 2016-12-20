@@ -221,6 +221,71 @@ class SignaturitClient
         request :get, "/v3/emails/#{email_id}/certificates/#{certificate_id}/download/audit_trail", {}, false
     end
 
+    # Get all SMS
+    #
+    # Params:
+    # +limit+:: Maximum number of results to return
+    # +offset+:: Offset of results to skip
+    # +conditions+:: Query conditions
+    def get_sms(limit = 100, offset = 0, conditions = {})
+        params = extract_query_params conditions
+
+        params['limit']  = limit
+        params['offset'] = offset
+
+        request :get, "/v3/sms.json", params
+    end
+
+    # Count all SMS
+    #
+    # Params:
+    # +conditions+:: Query conditions
+    def count_sms(conditions = {})
+        params = extract_query_params conditions
+
+        request :get, "/v3/sms/count.json", params
+    end
+
+    # Get a single SMS
+    #
+    # Params:
+    # +sms_id+:: Id of SMS
+    def get_single_sms(sms_id)
+        request :get, "/v3/sms/#{sms_id}.json"
+    end
+
+    # Create a new SMS
+    #
+    # Params:
+    # +files+:: File or files to send with the SMS
+    # +recipients+:: Recipients for the SMS
+    # +body+:: SMS body
+    # +params+:: Extra params
+    def create_sms(files, recipients, body, params = {})
+        params[:recipients] = {}
+
+        [recipients].flatten.each_with_index do |recipient, index|
+            params[:recipients][index] = recipient
+        end
+
+        params[:attachments] = [files].flatten.map do |filepath|
+            File.new(filepath, 'rb')
+        end
+
+        params[:body] = body
+
+        request :post, "/v3/sms.json", params
+    end
+
+    # Get the audit trail of concrete certificate
+    #
+    # Params:
+    # +sms_id++:: The id of the SMS object
+    # +certificate_id++:: The id of the certificate object
+    def download_sms_audit_trail(sms_id, certificate_id)
+        request :get, "/v3/sms/#{sms_id}/certificates/#{certificate_id}/download/audit_trail", {}, false
+    end
+
     # PRIVATE METHODS FROM HERE
     private
 

@@ -173,4 +173,46 @@ class TestSignaturitClient < Test::Unit::TestCase
         assert_requested :post, 'https://api.signaturit.com/v3/emails.json', :headers => { :Authorization => 'Bearer a_token' }
     end
 
+    def test_get_single_sms
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.get_single_sms 'an_id'
+
+        assert_requested :get, 'https://api.signaturit.com/v3/sms/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_get_sms
+        stub_request(:any, /.*/).to_return(:body => '[]')
+
+        @client.get_sms(5, 10)
+
+        assert_requested :get, 'https://api.signaturit.com/v3/sms.json?limit=5&offset=10', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_count_sms
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.count_sms({:status => 'delivered'})
+
+        assert_requested :get, 'https://api.signaturit.com/v3/sms/count.json?status=delivered', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_get_audit_trail
+        stub_request(:any, /.*/).to_return(:body => '')
+
+        @client.download_sms_audit_trail('an_id', 'another_id')
+
+        assert_requested :get, 'https://api.signaturit.com/v3/sms/an_id/certificates/another_id/download/audit_trail', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_create_sms_request
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        path = File.join(File.expand_path(File.dirname(__FILE__)), 'file.pdf')
+
+        @client.create_sms path, 'admin@signatur.it', 'a body'
+
+        assert_requested :post, 'https://api.signaturit.com/v3/sms.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
 end
