@@ -36,7 +36,6 @@ class TestSignaturitClient < Test::Unit::TestCase
         assert_requested :get, 'https://api.signaturit.com/v3/signatures/count.json?status=signed&since=1982-07-27', :headers => { :Authorization => 'Bearer a_token' }
     end
 
-
     def test_get_audit_trail
         stub_request(:any, /.*/).to_return(:body => '')
 
@@ -130,6 +129,48 @@ class TestSignaturitClient < Test::Unit::TestCase
         @client.get_templates(5, 10)
 
         assert_requested :get, 'https://api.signaturit.com/v3/templates.json?limit=5&offset=10', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_get_email
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.get_email 'an_id'
+
+        assert_requested :get, 'https://api.signaturit.com/v3/emails/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_get_emails
+        stub_request(:any, /.*/).to_return(:body => '[]')
+
+        @client.get_emails(5, 10)
+
+        assert_requested :get, 'https://api.signaturit.com/v3/emails.json?limit=5&offset=10', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_count_emails
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.count_emails({:status => 'delivered'})
+
+        assert_requested :get, 'https://api.signaturit.com/v3/emails/count.json?status=delivered', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_get_audit_trail
+        stub_request(:any, /.*/).to_return(:body => '')
+
+        @client.download_email_audit_trail('an_id', 'another_id')
+
+        assert_requested :get, 'https://api.signaturit.com/v3/emails/an_id/certificates/another_id/download/audit_trail', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_create_email_request
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        path = File.join(File.expand_path(File.dirname(__FILE__)), 'file.pdf')
+
+        @client.create_email path, 'admin@signatur.it', 'a subject', 'a body'
+
+        assert_requested :post, 'https://api.signaturit.com/v3/emails.json', :headers => { :Authorization => 'Bearer a_token' }
     end
 
 end
