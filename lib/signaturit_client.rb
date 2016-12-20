@@ -347,6 +347,67 @@ class SignaturitClient
         request :delete, "/v3/subscriptions/#{subscription_id}.json"
     end
 
+    # Get all contacts
+    #
+    # Params:
+    # +limit+:: Maximum number of results to return
+    # +offset+:: Offset of results to skip
+    # +conditions+:: Query conditions
+    def get_contacts(limit = 100, offset = 0, conditions = {})
+        params = extract_query_params conditions
+
+        params['limit']  = limit
+        params['offset'] = offset
+
+        request :get, "/v3/contacts.json", params
+    end
+
+    # Count all contacts
+    #
+    # Params:
+    # +conditions+:: Query conditions
+    def count_contacts(conditions = {})
+        params = extract_query_params conditions
+
+        request :get, "/v3/contacts/count.json", params
+    end
+
+    # Get a single contact
+    #
+    # Params:
+    # +contact_id+:: Id of contact
+    def get_contact(contact_id)
+        request :get, "/v3/contacts/#{contact_id}.json"
+    end
+
+    # Create a new contact
+    #
+    # Params:
+    # +email+:: Contact email
+    # +name+:: Contact name
+    def create_contact(email, name)
+        params = { email: email, name: name }
+
+        request :post, "/v3/contacts.json", params
+    end
+
+    # Update an existing contact
+    #
+    # Params:
+    # +contact_id+:: Id of the contact to update
+    # +params+:: Same params as method create_contact, see above
+    def update_contact(contact_id, params)
+        request :patch, "/v3/contacts/#{contact_id}.json", params
+    end
+
+    # Delete an existing contact
+    #
+    # Params:
+    # +contact_id+:: Id of the contact to update
+    def delete_contact(contact_id)
+        request :delete, "/v3/contacts/#{contact_id}.json"
+    end
+
     # PRIVATE METHODS FROM HERE
     private
 

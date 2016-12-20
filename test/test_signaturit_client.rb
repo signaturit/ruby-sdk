@@ -263,4 +263,52 @@ class TestSignaturitClient < Test::Unit::TestCase
         assert_requested :delete, 'https://api.signaturit.com/v3/subscriptions/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
     end
 
+    def test_get_single_contact
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.get_contact 'an_id'
+
+        assert_requested :get, 'https://api.signaturit.com/v3/contacts/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_get_contacts
+        stub_request(:any, /.*/).to_return(:body => '[]')
+
+        @client.get_contacts(5, 10)
+
+        assert_requested :get, 'https://api.signaturit.com/v3/contacts.json?limit=5&offset=10', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_count_contacts
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.count_contacts()
+
+        assert_requested :get, 'https://api.signaturit.com/v3/contacts/count.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_create_contacts
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.create_contact 'email@domain.com', 'Email'
+
+        assert_requested :post, 'https://api.signaturit.com/v3/contacts.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_update_contact
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.update_contact('an_id', {})
+
+        assert_requested :patch, 'https://api.signaturit.com/v3/contacts/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_delete_contact
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.delete_contact('an_id')
+
+        assert_requested :delete, 'https://api.signaturit.com/v3/contacts/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
 end
