@@ -215,8 +215,8 @@ class SignaturitClient
     # Get the audit trail of concrete certificate
     #
     # Params:
-    # +email_id++:: The id of the signature object
-    # +certificate_id++:: The id of the document object
+    # +email_id++:: The id of the email object
+    # +certificate_id++:: The id of the certificate object
     def download_email_audit_trail(email_id, certificate_id)
         request :get, "/v3/emails/#{email_id}/certificates/#{certificate_id}/download/audit_trail", {}, false
     end
