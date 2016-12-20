@@ -134,7 +134,7 @@ class SignaturitClient
         request :post, "/v3/brandings.json", params
     end
 
-    # Update a existing branding
+    # Update an existing branding
     #
     # Params:
     # +branding_id+:: Id of the branding to update
@@ -284,6 +284,67 @@ class SignaturitClient
     # +certificate_id++:: The id of the certificate object
     def download_sms_audit_trail(sms_id, certificate_id)
         request :get, "/v3/sms/#{sms_id}/certificates/#{certificate_id}/download/audit_trail", {}, false
+    end
+
+    # Get all subscription
+    #
+    # Params:
+    # +limit+:: Maximum number of results to return
+    # +offset+:: Offset of results to skip
+    # +conditions+:: Query conditions
+    def get_subscriptions(limit = 100, offset = 0, conditions = {})
+        params = extract_query_params conditions
+
+        params['limit']  = limit
+        params['offset'] = offset
+
+        request :get, "/v3/subscriptions.json", params
+    end
+
+    # Count all subscription
+    #
+    # Params:
+    # +conditions+:: Query conditions
+    def count_subscriptions(conditions = {})
+        params = extract_query_params conditions
+
+        request :get, "/v3/subscriptions/count.json", params
+    end
+
+    # Get a single subscription
+    #
+    # Params:
+    # +subscription_id+:: Id of subscription
+    def get_subscription(subscription_id)
+        request :get, "/v3/subscriptions/#{subscription_id}.json"
+    end
+
+    # Create a new subscription
+    #
+    # Params:
+    # +url+:: A url where to send the events.
+    # +events+:: The list of events to subscribe.
+    def create_subscription(url, events)
+        params = { url: url, events: events }
+
+        request :post, "/v3/subscriptions.json", params
+    end
+
+    # Update an existing subscription
+    #
+    # Params:
+    # +subscription_id+:: Id of the subscription to update
+    # +params+:: Same params as method create_subscription, see above
+    def update_subscription(subscription_id, params)
+        request :patch, "/v3/subscriptions/#{subscription_id}.json", params
+    end
+
+    # Delete an existing subscription
+    #
+    # Params:
+    # +subscription_id+:: Id of the subscription to update
+    def delete_subscription(subscription_id)
+        request :delete, "/v3/subscriptions/#{subscription_id}.json"
     end
 
     # PRIVATE METHODS FROM HERE

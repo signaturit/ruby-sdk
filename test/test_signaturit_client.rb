@@ -163,7 +163,7 @@ class TestSignaturitClient < Test::Unit::TestCase
         assert_requested :get, 'https://api.signaturit.com/v3/emails/an_id/certificates/another_id/download/audit_trail', :headers => { :Authorization => 'Bearer a_token' }
     end
 
-    def test_create_email_request
+    def test_create_email
         stub_request(:any, /.*/).to_return(:body => '{}')
 
         path = File.join(File.expand_path(File.dirname(__FILE__)), 'file.pdf')
@@ -205,7 +205,7 @@ class TestSignaturitClient < Test::Unit::TestCase
         assert_requested :get, 'https://api.signaturit.com/v3/sms/an_id/certificates/another_id/download/audit_trail', :headers => { :Authorization => 'Bearer a_token' }
     end
 
-    def test_create_sms_request
+    def test_create_sms
         stub_request(:any, /.*/).to_return(:body => '{}')
 
         path = File.join(File.expand_path(File.dirname(__FILE__)), 'file.pdf')
@@ -213,6 +213,54 @@ class TestSignaturitClient < Test::Unit::TestCase
         @client.create_sms path, 'admin@signatur.it', 'a body'
 
         assert_requested :post, 'https://api.signaturit.com/v3/sms.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_get_single_subscription
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.get_subscription 'an_id'
+
+        assert_requested :get, 'https://api.signaturit.com/v3/subscriptions/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_get_subscriptions
+        stub_request(:any, /.*/).to_return(:body => '[]')
+
+        @client.get_subscriptions(5, 10)
+
+        assert_requested :get, 'https://api.signaturit.com/v3/subscriptions.json?limit=5&offset=10', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_count_subscriptions
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.count_subscriptions()
+
+        assert_requested :get, 'https://api.signaturit.com/v3/subscriptions/count.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_create_subscriptions
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.create_subscription 'https://www.signaturit.com', 'email_delivered'
+
+        assert_requested :post, 'https://api.signaturit.com/v3/subscriptions.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_update_subscription
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.update_subscription('an_id', {})
+
+        assert_requested :patch, 'https://api.signaturit.com/v3/subscriptions/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_delete_subscription
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.delete_subscription('an_id')
+
+        assert_requested :delete, 'https://api.signaturit.com/v3/subscriptions/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
     end
 
 end
