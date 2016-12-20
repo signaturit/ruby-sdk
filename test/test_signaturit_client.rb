@@ -311,4 +311,116 @@ class TestSignaturitClient < Test::Unit::TestCase
         assert_requested :delete, 'https://api.signaturit.com/v3/contacts/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
     end
 
+    def test_get_single_user
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.get_user 'an_id'
+
+        assert_requested :get, 'https://api.signaturit.com/v3/team/users/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_get_users
+        stub_request(:any, /.*/).to_return(:body => '[]')
+
+        @client.get_users(5, 10)
+
+        assert_requested :get, 'https://api.signaturit.com/v3/team/users.json?limit=5&offset=10', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_invite_user
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.invite_user 'email@domain.com', 'admin'
+
+        assert_requested :post, 'https://api.signaturit.com/v3/team/users.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_change_user_role
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.change_user_role('an_id', 'admin')
+
+        assert_requested :patch, 'https://api.signaturit.com/v3/team/users/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_remove_user
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.remove_user('an_id')
+
+        assert_requested :delete, 'https://api.signaturit.com/v3/team/users/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_get_single_group
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.get_group 'an_id'
+
+        assert_requested :get, 'https://api.signaturit.com/v3/team/groups/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_get_groups
+        stub_request(:any, /.*/).to_return(:body => '[]')
+
+        @client.get_groups(5, 10)
+
+        assert_requested :get, 'https://api.signaturit.com/v3/team/groups.json?limit=5&offset=10', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_create_groups
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.create_group 'SDKs'
+
+        assert_requested :post, 'https://api.signaturit.com/v3/team/groups.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_update_group
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.update_group('an_id', 'SDK')
+
+        assert_requested :patch, 'https://api.signaturit.com/v3/team/groups/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_delete_group
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.delete_group('an_id')
+
+        assert_requested :delete, 'https://api.signaturit.com/v3/team/groups/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_add_manager_to_group
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.add_manager_to_group 'an_id', 'another_id'
+
+        assert_requested :post, 'https://api.signaturit.com/v3/team/groups/an_id/managers/another_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_remove_manager_from_group
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.remove_manager_from_group 'an_id', 'another_id'
+
+        assert_requested :delete, 'https://api.signaturit.com/v3/team/groups/an_id/managers/another_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_add_member_to_group
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.add_member_to_group 'an_id', 'another_id'
+
+        assert_requested :post, 'https://api.signaturit.com/v3/team/groups/an_id/members/another_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_remove_member_from_group
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.remove_member_from_group 'an_id', 'another_id'
+
+        assert_requested :delete, 'https://api.signaturit.com/v3/team/groups/an_id/members/another_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
 end

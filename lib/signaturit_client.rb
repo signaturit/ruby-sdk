@@ -408,6 +408,147 @@ class SignaturitClient
         request :delete, "/v3/contacts/#{contact_id}.json"
     end
 
+    # Get all users
+    #
+    # Params:
+    # +limit+:: Maximum number of results to return
+    # +offset+:: Offset of results to skip
+    # +conditions+:: Query conditions
+    def get_users(limit = 100, offset = 0, conditions = {})
+        params = extract_query_params conditions
+
+        params['limit']  = limit
+        params['offset'] = offset
+
+        request :get, "/v3/team/users.json", params
+    end
+
+    # Get a single user
+    #
+    # Params:
+    # +user_id+:: Id of user
+    def get_user(user_id)
+        request :get, "/v3/team/users/#{user_id}.json"
+    end
+
+    # Invites a user to the team
+    #
+    # Params:
+    # +email+:: User email
+    # +role+:: User role
+    def invite_user(email, role)
+        params = { email: email, role: role }
+
+        request :post, "/v3/team/users.json", params
+    end
+
+    # Update an existing user role
+    #
+    # Params:
+    # +user_id+:: Id of the user to update
+    # +role+:: The new role
+    def change_user_role(user_id, role)
+        params = { role: role }
+
+        request :patch, "/v3/team/users/#{user_id}.json", params
+    end
+
+    # Delete an existing user from the team
+    #
+    # Params:
+    # +user_id+:: Id of the user to remove
+    def remove_user(user_id)
+        request :delete, "/v3/team/users/#{user_id}.json"
+    end
+
+    # Get all groups
+    #
+    # Params:
+    # +limit+:: Maximum number of results to return
+    # +offset+:: Offset of results to skip
+    # +conditions+:: Query conditions
+    def get_groups(limit = 100, offset = 0, conditions = {})
+        params = extract_query_params conditions
+
+        params['limit']  = limit
+        params['offset'] = offset
+
+        request :get, "/v3/team/groups.json", params
+    end
+
+    # Get a single group
+    #
+    # Params:
+    # +group_id+:: Id of group
+    def get_group(group_id)
+        request :get, "/v3/team/groups/#{group_id}.json"
+    end
+
+    # Create a new group
+    #
+    # Params:
+    # +name+:: Group name
+    def create_group(name)
+        params = { name: name }
+
+        request :post, "/v3/team/groups.json", params
+    end
+
+    # Update an existing group
+    #
+    # Params:
+    # +group_id+:: Id of the group to update
+    # +params+:: Same params as method create_group, see above
+    def update_group(group_id, name)
+        params = { name: name }
+
+        request :patch, "/v3/team/groups/#{group_id}.json", params
+    end
+
+    # Delete an existing group
+    #
+    # Params:
+    # +group_id+:: Id of the group to delete
+    def delete_group(group_id)
+        request :delete, "/v3/team/groups/#{group_id}.json"
+    end
+
+    # Add a new manager to the group
+    #
+    # Params:
+    # +group_id+:: Id of the group where to add the user
+    # +user_id+:: Id of the user to add
+    def add_manager_to_group(group_id, user_id)
+        request :post, "/v3/team/groups/#{group_id}/managers/#{user_id}.json"
+    end
+
+    # Remove a manager from the group
+    #
+    # Params:
+    # +group_id+:: Id of the group where to add the user
+    # +user_id+:: Id of the user to add
+    def remove_manager_from_group(group_id, user_id)
+        request :delete, "/v3/team/groups/#{group_id}/managers/#{user_id}.json"
+    end
+
+    # Add a new member to the group
+    #
+    # Params:
+    # +group_id+:: Id of the group where to add the user
+    # +user_id+:: Id of the user to add
+    def add_member_to_group(group_id, user_id)
+        request :post, "/v3/team/groups/#{group_id}/members/#{user_id}.json"
+    end
+
+    # Remove a member from the group
+    #
+    # Params:
+    # +group_id+:: Id of the group where to add the user
+    # +user_id+:: Id of the user to add
+    def remove_member_from_group(group_id, user_id)
+        request :delete, "/v3/team/groups/#{group_id}/members/#{user_id}.json"
+    end
+
     # PRIVATE METHODS FROM HERE
     private
 
