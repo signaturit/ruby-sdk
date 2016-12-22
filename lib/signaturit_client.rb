@@ -11,7 +11,7 @@ class SignaturitClient
     def initialize(token, production = false)
         base = production ? 'https://api.signaturit.com' : 'https://api.sandbox.signaturit.com'
 
-        @client = RestClient::Resource.new base, :headers => { :Authorization => "Bearer #{token}", :user_agent => 'signaturit-ruby-sdk 1.0.2' }, :ssl_version => :TLSv1_2
+        @client = RestClient::Resource.new base, :headers => { :Authorization => "Bearer #{token}", :user_agent => 'signaturit-ruby-sdk 1.1.0' }, :ssl_version => :TLSv1_2
     end
 
     # Get a concrete signature object
