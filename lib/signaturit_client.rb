@@ -549,6 +549,29 @@ class SignaturitClient
         request :delete, "/v3/team/groups/#{group_id}/members/#{user_id}.json"
     end
 
+    # Get all seats
+    #
+    # Params:
+    # +limit+:: Maximum number of results to return
+    # +offset+:: Offset of results to skip
+    # +conditions+:: Query conditions
+    def get_seats(limit = 100, offset = 0, conditions = {})
+        params = extract_query_params conditions
+
+        params['limit']  = limit
+        params['offset'] = offset
+
+        request :get, "/v3/team/seats.json", params
+    end
+
+    # Remove a seat
+    #
+    # Params:
+    # +seat_id+:: Id of the seat to remove
+    def remove_seat(seat_id)
+        request :delete, "/v3/team/seats/#{seat_id}.json"
+    end
+
     # PRIVATE METHODS FROM HERE
     private
 

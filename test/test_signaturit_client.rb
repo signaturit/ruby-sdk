@@ -423,4 +423,20 @@ class TestSignaturitClient < Test::Unit::TestCase
         assert_requested :delete, 'https://api.signaturit.com/v3/team/groups/an_id/members/another_id.json', :headers => { :Authorization => 'Bearer a_token' }
     end
 
+    def test_get_seats
+        stub_request(:any, /.*/).to_return(:body => '[]')
+
+        @client.get_seats(5, 10)
+
+        assert_requested :get, 'https://api.signaturit.com/v3/team/seats.json?limit=5&offset=10', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
+    def test_remove_seat
+        stub_request(:any, /.*/).to_return(:body => '{}')
+
+        @client.remove_seat('an_id')
+
+        assert_requested :delete, 'https://api.signaturit.com/v3/team/seats/an_id.json', :headers => { :Authorization => 'Bearer a_token' }
+    end
+
 end
