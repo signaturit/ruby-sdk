@@ -268,8 +268,10 @@ class SignaturitClient
             params[:recipients][index] = recipient
         end
 
-        params[:attachments] = [files].flatten.map do |filepath|
-            File.new(filepath, 'rb')
+        if files
+            params[:attachments] = [files].flatten.map do |filepath|
+                File.new(filepath, 'rb')
+            end
         end
 
         params[:body] = body
