@@ -1,18 +1,20 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    addressable (2.4.0)
+    addressable (2.6.0)
+      public_suffix (>= 2.0.2, < 4.0)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
-    hashdiff (0.3.0)
+    hashdiff (0.3.8)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2018.0812)
     netrc (0.11.0)
+    public_suffix (3.0.3)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
@@ -21,7 +23,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
-    webmock (1.24.6)
+    webmock (3.5.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
@@ -31,7 +33,7 @@ PLATFORMS
 
 DEPENDENCIES
   rest-client (~> 2.0)
-  webmock (~> 1.18)
+  webmock (~> 3.0)
 
 BUNDLED WITH
-   1.17.1
+   1.17.2
