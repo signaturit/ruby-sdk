@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
     s.platform    = Gem::Platform::RUBY
     s.name        = 'signaturit-sdk'
-    s.version     = '1.1.0'
+    s.version     = '1.2.0'
     s.date        = '2016-01-20'
     s.summary     = 'Signaturit Ruby SDK'
     s.description = 'Sign Documents Online'
@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
 
     s.add_dependency 'rest-client', '~> 2.0'
 
-    s.add_development_dependency 'webmock', '~> 1.18'
+    s.add_development_dependency 'webmock', '~> 3.0'
 end
