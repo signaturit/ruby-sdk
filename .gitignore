@@ -1,5 +1,5 @@
-pkg
-Vagrantfile
-vagrant.sh
-.vagrant
 .DS_Store
+.idea
+.scannerwork
+coverage
+pkg

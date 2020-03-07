@@ -1,3 +1,5 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=signaturit_ruby-sdk&metric=alert_status&token=121c3b6aa0fac2a6963c3536b38edc3a9e4bf8ab)](https://sonarcloud.io/dashboard?id=signaturit_ruby-sdk)
+
 ========================
 DO NOT USE MASTER BRANCH
 ========================
